@@ -7,25 +7,30 @@ string input = System.IO.File.ReadAllText(@"Input.txt");
 
 var timers = input.Split(',');
 
-List<LanternFish> shoal = new();
+Dictionary<int, long> timerCounts = new();
 
-foreach (var timer in timers)
+for(int timer = 0; timer <= 8; timer++)
 {
-    //Console.WriteLine(timer);
-    shoal.Add(new LanternFish(timer));
-
+    timerCounts[timer] = timers.Where(x => x == timer.ToString()).Count();
 }
 
-for (int day = 1; day <= 80; day++)
+for (int day = 1; day <= 256; day++)
 {
-    List<LanternFish> newFish = new();
+    long newFish = timerCounts[0];
 
-    foreach(var fish in shoal)
+    for (int i = 0; i < 8; i++)
     {
-        fish.CheckTimer(newFish);
+        timerCounts[i] = timerCounts[i + 1];
     }
 
-    shoal.AddRange(newFish);
-}
+    timerCounts[8] = newFish;
+    timerCounts[6] += newFish;
 
-Console.WriteLine($"There are now {shoal.Count} lanternfish");
+    long total = 0;
+    foreach (var timerCount in timerCounts)
+    {
+        total = total + timerCount.Value;
+    }
+
+    Console.WriteLine($"{DateTime.Now.ToLocalTime()} Day: {day}. There are now {total} lanternfish");
+}
