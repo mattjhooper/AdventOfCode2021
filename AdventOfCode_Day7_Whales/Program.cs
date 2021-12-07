@@ -31,7 +31,7 @@ for (int position = minVal; position <= maxVal; position++)
     long currentFuel = 0;
     foreach (var p in positionCounts)
     {
-        currentFuel += Math.Abs(position - p.Key) * p.Value;
+        currentFuel += Factoral(Math.Abs(position - p.Key)) * p.Value;
     }
 
     Console.WriteLine($"Pos: {position}, Fuel: {currentFuel}");
@@ -44,4 +44,12 @@ for (int position = minVal; position <= maxVal; position++)
 
 Console.WriteLine($"Best Position: {bestPosition}, Fuel: {bestFuel}");
 
+static int Factoral(int i)
+{
+    if (i == 0)
+    {
+        return 0;
+    }
 
+    return i + Factoral(i-1);
+}
