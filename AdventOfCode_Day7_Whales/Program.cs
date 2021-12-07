@@ -10,8 +10,8 @@ int[] positions = Array.ConvertAll<string, int>(positionStrings, (s) => int.Pars
 int average = (int)Math.Round(positions.Average(),0);
 int median = positions.OrderBy(i => i).ToArray()[positions.Length / 2];
 int range = Math.Max(Math.Abs(average - median), 20);
-int minVal = positions.Min();
-int maxVal = positions.Max();
+int minVal = median - range;// positions.Min();
+int maxVal = median + range; // positions.Max();
 
 Console.WriteLine($"Average: {average}. Median: {median}");
 
