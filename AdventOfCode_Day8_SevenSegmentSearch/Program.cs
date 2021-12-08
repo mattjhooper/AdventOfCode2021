@@ -11,13 +11,13 @@ foreach (string line in lines)
 
     var outputValues = parts[1].Trim(' ').Split(' ');
 
-    Console.WriteLine($"--- New Line ----");
+    //Console.WriteLine($"--- New Line ----");
     foreach (var outputValue in outputValues)
     {
         if (outputValue.Length != 5 && outputValue.Length != 6)
         {
             digitCount++;
-            Console.WriteLine($"Value: {outputValue}. Length: {outputValue.Length}");
+            //Console.WriteLine($"Value: {outputValue}. Length: {outputValue.Length}");
         }
     }
 }
