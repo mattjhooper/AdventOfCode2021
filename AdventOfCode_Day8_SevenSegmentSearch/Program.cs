@@ -9,53 +9,31 @@ foreach (string line in lines)
 {
     var parts = line.Split('|');
 
-    var signalValues = parts[0].Trim(' ').Split(' ');
+    HashSet<char>[] signalSets = Array.ConvertAll<string, HashSet<char>>(parts[0].Trim(' ').Split(' '), (s) => new HashSet<char>(s.ToCharArray()));
 
-    string[] digits = new string[signalValues.Length];
+    HashSet<char>[] digits = new HashSet<char>[signalSets.Length];
 
-    digits[1] = signalValues.First(d => d.Length == 2);
-    digits[7] = signalValues.First(d => d.Length == 3);
-    digits[4] = signalValues.First(d => d.Length == 4);
-    digits[8] = signalValues.First(d => d.Length == 7);
-    digits[3] = signalValues.First(d => d.Length == 5 && isFoundIn(digits[7], d));
-    digits[9] = signalValues.First(d => d.Length == 6 && isFoundIn(digits[3], d));
-    digits[0] = signalValues.First(d => d.Length == 6 && d != digits[9] && isFoundIn(digits[1], d));
-    digits[6] = signalValues.First(d => d.Length == 6 && d != digits[0] && d != digits[9]);
-    digits[5] = signalValues.First(d => d.Length == 5 && isFoundIn(d, digits[6]));
-    digits[2] = signalValues.First(d => d.Length == 5 && d != digits[5] && d != digits[3]);
+    digits[1] = signalSets.First(d => d.Count == 2);
+    digits[7] = signalSets.First(d => d.Count == 3);
+    digits[4] = signalSets.First(d => d.Count == 4);
+    digits[8] = signalSets.First(d => d.Count == 7);
+    digits[3] = signalSets.First(d => d.Count == 5 && d.IsProperSupersetOf(digits[7]));
+    digits[9] = signalSets.First(d => d.Count == 6 && d.IsProperSupersetOf(digits[3]));
+    digits[0] = signalSets.First(d => d.Count == 6 && !d.SetEquals(digits[9]) && d.IsProperSupersetOf(digits[1]));
+    digits[6] = signalSets.First(d => d.Count == 6 && !d.SetEquals(digits[0]) && !d.SetEquals(digits[9]));
+    digits[5] = signalSets.First(d => d.Count == 5 && d.IsProperSubsetOf(digits[6]));
+    digits[2] = signalSets.First(d => d.Count == 5 && !d.SetEquals(digits[3]) && !d.SetEquals(digits[5]));
 
-    for(int i = 0; i < digits.Length; i++)
-    {
-        //Console.WriteLine($"{i}: {digits[i]}");
-        digits[i] = String.Concat(digits[i].OrderBy(c => c));
-    }
-
-    var outputValues = parts[1].Trim(' ').Split(' ');
+    HashSet<char>[] outputValues = Array.ConvertAll<string, HashSet<char>>(parts[1].Trim(' ').Split(' '), (s) => new HashSet<char>(s.ToCharArray()));
 
     string reading = string.Empty;
 
-    //Console.WriteLine($"--- New Line ----");
     foreach (var outputValue in outputValues)
     {
-        reading += Array.FindIndex(digits, d => d == String.Concat(outputValue.OrderBy(c => c))).ToString();
+        reading += Array.FindIndex(digits, d => d.SetEquals(outputValue)).ToString();
     }
 
-    //Console.WriteLine($"Interesting Digits: {digitCount}");
-    //Console.WriteLine($"Reading: {reading}");
     total += int.Parse(reading);
 }
 
-Console.WriteLine($"Total: {total}");
-
-bool isFoundIn(string a, string b)
-{
-    foreach (char c in a.ToCharArray())
-    {
-        if (!b.Contains(c))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
+Console.WriteLine($"Total: {total}"); // 1043697
