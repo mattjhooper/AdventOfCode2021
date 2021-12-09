@@ -108,12 +108,10 @@ public class Marker : IMarker
     private int GetNeighboursBasinCount()
     {
         int count = 0;
-        Point[] directions = { Point.Left, Point.Up, Point.Right, Point.Down };
-        foreach (var direction in directions)
+        foreach (var neighbour in GetNeighbours())
         {
-            count += GetMarkerInDirection(direction).GetBasinCount();
+            count += neighbour.GetBasinCount();
         }
-
         return count;
     }
 
@@ -124,17 +122,25 @@ public class Marker : IMarker
 
     private bool HasLowerNeighbour()
     {
-        Point[] directions = { Point.Left, Point.Up, Point.Right, Point.Down };
-        bool lowerLevelFound = false;
-        for (int i = 0; i < directions.Length && !lowerLevelFound; i++)
+        foreach(var neighbour in GetNeighbours())
         {
-            lowerLevelFound = GetMarkerInDirection(directions[i]).IsLowerThan(Level); ;
+            if (neighbour.IsLowerThan(Level))
+            {
+                return true;
+            }
         }
-        return lowerLevelFound;
+
+        return false;
     }
 
-
-    private IMarker GetMarkerInDirection(Point direction) => _grid[Location.Move(direction)];
+    private IEnumerable<IMarker> GetNeighbours()
+    {
+        Point Left = new(-1, 0), Right = new(1, 0), Up = new(0, -1), Down = new (0, 1);
+        foreach (var direction in new Point[] { Left, Up, Right, Down })
+        {
+            yield return _grid[Location.Move(direction)];
+        }
+    }
 }
 
 public class OutOfBounds : IMarker
@@ -200,11 +206,11 @@ public abstract class Grid : IEnumerable<IMarker>
     public void Print()
     {
         Console.WriteLine("");
-        for (int row = 0; row < Height; row++)
+        for (int y = 0; y < Height; y++)
         {
-            for (int col = 0; col < Width; col++)
+            for (int x = 0; x < Width; x++)
             {
-                Console.Write(_grid[row, col]);
+                Console.Write(_grid[y, x]);
             }
             Console.WriteLine("");
         }
@@ -219,9 +225,4 @@ public sealed record Point(int X, int Y)
     public Point Move(Point delta) => new Point(X + delta.X, Y + delta.Y);
 
     public override string ToString() => $"[{X},{Y}]";
-
-    public static readonly Point Left = new Point(-1, 0);
-    public static readonly Point Right = new Point(1, 0);
-    public static readonly Point Up = new Point(0, 1);
-    public static readonly Point Down = new Point(0, -1);
 }
