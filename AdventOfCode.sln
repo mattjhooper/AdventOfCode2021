@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day6_Lanternfi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day7_Whales", "AdventOfCode_Day7_Whales\AdventOfCode_Day7_Whales.csproj", "{104BE763-1A7D-4E2B-AE62-C3686A6BB941}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day8_SevenSegmentSearch", "AdventOfCode_Day8_SevenSegmentSearch\AdventOfCode_Day8_SevenSegmentSearch.csproj", "{49B09264-B746-4A92-A320-863D13B12D3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day8_SevenSegmentSearch", "AdventOfCode_Day8_SevenSegmentSearch\AdventOfCode_Day8_SevenSegmentSearch.csproj", "{49B09264-B746-4A92-A320-863D13B12D3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day9_SmokeBasin", "AdventOfCode_Day9_SmokeBasin\AdventOfCode_Day9_SmokeBasin.csproj", "{7444F1BC-F786-4137-9E17-10A0F2D61673}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{49B09264-B746-4A92-A320-863D13B12D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49B09264-B746-4A92-A320-863D13B12D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49B09264-B746-4A92-A320-863D13B12D3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7444F1BC-F786-4137-9E17-10A0F2D61673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7444F1BC-F786-4137-9E17-10A0F2D61673}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7444F1BC-F786-4137-9E17-10A0F2D61673}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7444F1BC-F786-4137-9E17-10A0F2D61673}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
