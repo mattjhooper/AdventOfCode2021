@@ -70,12 +70,12 @@ public interface IMarker
 
 public class Marker : IMarker
 {
-    private readonly Terrain _t;
+    private readonly Grid _grid;
     private bool _Counted = false;
 
-    public Marker(Terrain t, Point p, int level)
+    public Marker(Grid g, Point p, int level)
     {
-        _t = t;
+        _grid = g;
         Level = level;
         Location = p;
     }
@@ -134,7 +134,7 @@ public class Marker : IMarker
     }
 
 
-    private IMarker GetMarkerInDirection(Point direction) => _t[Location.Move(direction)];
+    private IMarker GetMarkerInDirection(Point direction) => _grid[Location.Move(direction)];
 }
 
 public class OutOfBounds : IMarker
