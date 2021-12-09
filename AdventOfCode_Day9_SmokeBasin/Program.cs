@@ -9,12 +9,14 @@ var terrain = new Terrain(lines);
 
 //terrain.Print();
 
-Console.WriteLine($"Sum of Risk: {terrain.GetSumOfRiskLevels()}");
+//Console.WriteLine($"Sum of Risk: {terrain.GetSumOfRiskLevels()}");
+
+terrain.PrintBasinCounts();
 
 
 public class Terrain : IEnumerable<Marker>
 {
-    private readonly int[,] _t;
+    private readonly Marker[,] _t;
     private readonly int _height;
     private readonly int _width;
 
@@ -22,31 +24,23 @@ public class Terrain : IEnumerable<Marker>
     {
         _height = input.Length;
         _width = input[0].Length;
-        _t = new int[_height, _width];
+        _t = new Marker[_height, _width];
 
-        for(int row = 0; row < input.Length; row++)
+        for(int y = 0; y < input.Length; y++)
         {
-            for(int col = 0; col < input[row].Length; col++)
+            for(int x = 0; x < input[y].Length; x++)
             {
-                _t[row, col] = int.Parse(input[row][col].ToString());
+                _t[y, x] = new Marker(this, new Point(x, y), int.Parse(input[y][x].ToString()));
             }
         }
 
     }
 
-    public int this[Point p]
+    public Marker this[Point p]
     {
         get
         {
-            return InBounds(p) ? _t[p.Y,p.X] : 10;
-        }
-
-        set
-        {
-            if (InBounds(p))
-            {
-                _t[p.Y,p.X] = value;
-            }
+            return InBounds(p) ? _t[p.Y, p.X] : new Marker(this, p, 10);
         }
     }
 
@@ -59,6 +53,24 @@ public class Terrain : IEnumerable<Marker>
         }
 
         return sum;
+    }
+
+    public void PrintBasinCounts()
+    {
+        var basinCounts = new List<int>();
+
+        foreach (Marker m in this)
+        {
+            var basinCount = m.GetBasinCount();
+
+            if (basinCount > 0)
+            {
+                Console.WriteLine($"{m.Location}: {basinCount}");
+                basinCounts.Add(basinCount);
+            }
+        }
+
+        Console.WriteLine($"Basin calc: {basinCounts.OrderByDescending(i => i).Take(3).Aggregate(1, (a, b) => a * b)}"); // 916688
     }
 
     public void Print()
@@ -83,7 +95,7 @@ public class Terrain : IEnumerable<Marker>
         {
             for (int x = 0; x < _width; x++)
             {
-                yield return new Marker(this, new Point(x, y));
+                yield return _t[y,x];
             }
         }
     }
@@ -95,16 +107,18 @@ public class Terrain : IEnumerable<Marker>
 public class Marker
 {
     private readonly Terrain _t;
+    private bool _Counted = false;
 
-    public Marker(Terrain t, Point p)
+    public Marker(Terrain t, Point p, int level)
     {
         _t = t;
+        Level = level;
         Location = p;
     }
 
+    public int Level { get; private set; }
+    
     public Point Location { get; private set; }
-
-    public int Level => _t[Location];
 
     public bool IsLowerThan(int checkLevel) => Level <= checkLevel;
 
@@ -114,6 +128,34 @@ public class Marker
             return 0;
 
         return Level + 1;
+    }
+
+    public int GetBasinCount()
+    {
+        if (!_Counted && Level < 9)
+        {
+            _Counted = true;
+            return 1 + GetNeighboursBasinCount();
+        }
+
+        return 0;
+    }
+
+    private int GetNeighboursBasinCount()
+    {
+        int count = 0;
+        Point[] directions = { Point.Left, Point.Up, Point.Right, Point.Down };
+        foreach (var direction in directions)
+        {
+            count += GetMarkerInDirection(direction).GetBasinCount();
+        }
+
+        return count;
+    }
+
+    public override string ToString()
+    {
+        return Level.ToString();
     }
 
     private bool HasLowerNeighbour()
@@ -128,7 +170,7 @@ public class Marker
     }
 
     
-    private Marker GetMarkerInDirection(Point direction) => new Marker(_t, Location.Move(direction));    
+    private Marker GetMarkerInDirection(Point direction) => _t[Location.Move(direction)];    
 }
 
 
