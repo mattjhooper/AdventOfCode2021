@@ -13,35 +13,79 @@ Console.WriteLine($"Sum of Risk: {terrain.GetSumOfRiskLevels()}");
 
 terrain.PrintBasinCounts();
 
-
-public class Terrain : IEnumerable<IMarker>
+public abstract class Grid : IEnumerable<IMarker>
 {
-    private readonly Marker[,] _t;
-    private readonly int _height;
-    private readonly int _width;
+    private readonly IMarker[,] _grid;
 
-    public Terrain(string[] input)
+    protected Grid(int height, int width)
     {
-        _height = input.Length;
-        _width = input[0].Length;
-        _t = new Marker[_height, _width];
+        Height = height;
+        Width = width;
 
-        for(int y = 0; y < input.Length; y++)
-        {
-            for(int x = 0; x < input[y].Length; x++)
-            {
-                _t[y, x] = new Marker(this, new Point(x, y), int.Parse(input[y][x].ToString()));
-            }
-        }
-
+        _grid = new Marker[height, width];
     }
+    
+    public int Height { get; init; }
+    public int Width { get; init; }
 
     public IMarker this[Point p]
     {
         get
         {
-            return InBounds(p) ? _t[p.Y, p.X] : new OutOfBounds();
+            return InBounds(p) ? _grid[p.Y, p.X] : new OutOfBounds();
         }
+    }
+
+    protected void SetMarker(Marker m)
+    {
+        if (InBounds(m.Location))
+        {
+            _grid[m.Location.Y, m.Location.X] = m;
+        }
+    }
+
+    public IEnumerator<IMarker> GetEnumerator()
+    {
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                yield return _grid[y, x];
+            }
+        }
+    }
+
+    public bool InBounds(Point p) => 0 <= p.Y && p.Y < Height && 0 <= p.X && p.X < Width;
+
+    public void Print()
+    {
+        Console.WriteLine("");
+        for (int row = 0; row < Height; row++)
+        {
+            for (int col = 0; col < Width; col++)
+            {
+                Console.Write(_grid[row, col]);
+            }
+            Console.WriteLine("");
+        }
+        Console.WriteLine("");
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator(); 
+}
+
+public class Terrain : Grid
+{
+    public Terrain(string[] input) : base(input.Length, input[0].Length)
+    {
+        for(int y = 0; y < input.Length; y++)
+        {
+            for(int x = 0; x < input[y].Length; x++)
+            {
+                SetMarker(new Marker(this, new Point(x, y), int.Parse(input[y][x].ToString())));
+            }
+        }
+
     }
 
     public int GetSumOfRiskLevels()
@@ -72,36 +116,6 @@ public class Terrain : IEnumerable<IMarker>
 
         Console.WriteLine($"Basin calc: {basinCounts.OrderByDescending(i => i).Take(3).Aggregate(1, (a, b) => a * b)}"); // 916688
     }
-
-    public void Print()
-    {
-        Console.WriteLine("");
-        for (int row = 0; row < _height; row++)
-        {
-            for(int col = 0; col < _width; col++)
-            {
-                Console.Write(_t[row, col]);
-            }
-            Console.WriteLine("");
-        }
-        Console.WriteLine("");
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    public IEnumerator<IMarker> GetEnumerator()
-    {
-        for (int y = 0; y < _height; y++)
-        {
-            for (int x = 0; x < _width; x++)
-            {
-                yield return _t[y,x];
-            }
-        }
-    }
-
-    public bool InBounds(Point p) => 0 <= p.Y && p.Y < _height && 0 <= p.X && p.X < _width;
-
 }
 
 public interface IMarker
