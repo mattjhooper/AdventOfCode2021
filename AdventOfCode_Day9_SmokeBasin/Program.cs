@@ -9,12 +9,12 @@ var terrain = new Terrain(lines);
 
 //terrain.Print();
 
-//Console.WriteLine($"Sum of Risk: {terrain.GetSumOfRiskLevels()}");
+Console.WriteLine($"Sum of Risk: {terrain.GetSumOfRiskLevels()}");
 
 terrain.PrintBasinCounts();
 
 
-public class Terrain : IEnumerable<Marker>
+public class Terrain : IEnumerable<IMarker>
 {
     private readonly Marker[,] _t;
     private readonly int _height;
@@ -36,18 +36,18 @@ public class Terrain : IEnumerable<Marker>
 
     }
 
-    public Marker this[Point p]
+    public IMarker this[Point p]
     {
         get
         {
-            return InBounds(p) ? _t[p.Y, p.X] : new Marker(this, p, 10);
+            return InBounds(p) ? _t[p.Y, p.X] : new OutOfBounds();
         }
     }
 
     public int GetSumOfRiskLevels()
     {
         int sum = 0;
-        foreach (Marker m in this)
+        foreach (IMarker m in this)
         {
             sum += m.GetRiskLevel();
         }
@@ -59,13 +59,13 @@ public class Terrain : IEnumerable<Marker>
     {
         var basinCounts = new List<int>();
 
-        foreach (Marker m in this)
+        foreach (IMarker m in this)
         {
             var basinCount = m.GetBasinCount();
 
             if (basinCount > 0)
             {
-                Console.WriteLine($"{m.Location}: {basinCount}");
+                //Console.WriteLine($"{m.Location}: {basinCount}");
                 basinCounts.Add(basinCount);
             }
         }
@@ -89,7 +89,7 @@ public class Terrain : IEnumerable<Marker>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public IEnumerator<Marker> GetEnumerator()
+    public IEnumerator<IMarker> GetEnumerator()
     {
         for (int y = 0; y < _height; y++)
         {
@@ -104,7 +104,18 @@ public class Terrain : IEnumerable<Marker>
 
 }
 
-public class Marker
+public interface IMarker
+{
+    int Level { get; }
+    Point Location { get; }
+
+    int GetBasinCount();
+    int GetRiskLevel();
+    bool IsLowerThan(int checkLevel);
+    string ToString();
+}
+
+public class Marker : IMarker
 {
     private readonly Terrain _t;
     private bool _Counted = false;
@@ -117,7 +128,7 @@ public class Marker
     }
 
     public int Level { get; private set; }
-    
+
     public Point Location { get; private set; }
 
     public bool IsLowerThan(int checkLevel) => Level <= checkLevel;
@@ -169,8 +180,24 @@ public class Marker
         return lowerLevelFound;
     }
 
-    
-    private Marker GetMarkerInDirection(Point direction) => _t[Location.Move(direction)];    
+
+    private IMarker GetMarkerInDirection(Point direction) => _t[Location.Move(direction)];
+}
+
+public class OutOfBounds : IMarker
+{
+    public int Level => 10;
+
+    public Point Location => new Point(-1, -1);
+
+    public int GetBasinCount() => 0;
+    public int GetRiskLevel() => 0;
+    public bool IsLowerThan(int checkLevel) => false;
+
+    public override string ToString()
+    {
+        return "Out of Bounds";
+    }
 }
 
 
