@@ -31,8 +31,9 @@ public class Cavern : Grid
     public long GetFlashCount()
     {
         long flashCount = 0;
+        bool allFlash = false;
 
-        for (int step = 1; step <= 100; step++)
+        for (int step = 1; !allFlash; step++)
         {
             foreach (IMarker m in this)
             {
@@ -43,6 +44,14 @@ public class Cavern : Grid
             {
                 flashCount += m.GetFlashCount();
             }
+
+            int levelSum = this.Sum(m => m.Level);
+            if (levelSum == 0)
+            {
+                allFlash = true;
+                Console.WriteLine($"All flash at step {step}");
+            }
+
         }
 
         return flashCount;
