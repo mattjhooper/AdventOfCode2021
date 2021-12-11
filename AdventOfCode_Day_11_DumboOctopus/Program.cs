@@ -14,7 +14,7 @@ Console.WriteLine($"Flash count {cavern.GetFlashCount()}"); // 1642
 //cavern.Print();
 
 
-public class Cavern : Grid
+public class Cavern : Grid<Octopus>
 {
     public Cavern(string[] input) : base(input.Length, input[0].Length)
     {
@@ -49,7 +49,7 @@ public class Cavern : Grid
             if (levelSum == 0)
             {
                 allFlash = true;
-                Console.WriteLine($"All flash at step {step}");
+                Console.WriteLine($"All flash at step {step}"); //320
             }
 
         }
@@ -73,10 +73,10 @@ public interface IMarker
 
 public class Octopus : IMarker
 {
-    private readonly Grid _grid;
+    private readonly Grid<Octopus> _grid;
     private bool _flashed = false;
 
-    public Octopus(Grid g, Point p, int level)
+    public Octopus(Grid<Octopus> g, Point p, int level)
     {
         _grid = g;
         Level = level;
@@ -165,16 +165,16 @@ public class OutOfBounds : IMarker
     }
 }
 
-public abstract class Grid : IEnumerable<IMarker>
+public abstract class Grid<T> : IEnumerable<IMarker> where T : IMarker
 {
-    private readonly IMarker[,] _grid;
+    private readonly T[,] _grid;
 
     protected Grid(int height, int width)
     {
         Height = height;
         Width = width;
 
-        _grid = new Octopus[height, width];
+        _grid = new T[height, width];
     }
 
     public int Height { get; init; }
@@ -188,7 +188,7 @@ public abstract class Grid : IEnumerable<IMarker>
         }
     }
 
-    internal void SetMarker(Octopus m)
+    internal void SetMarker(T m)
     {
         if (InBounds(m.Location))
         {
