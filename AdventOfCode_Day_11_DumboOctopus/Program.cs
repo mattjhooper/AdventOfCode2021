@@ -123,10 +123,12 @@ public class Octopus : IMarker
 
     private IEnumerable<IMarker> GetNeighbours()
     {
-        Point Left = new(-1, 0), Right = new(1, 0), Up = new(0, -1), Down = new(0, 1);
-        foreach (var direction in new Point[] { Left, Up, Right, Down, new (-1, -1), new(-1, 1), new(1, 1), new(1, -1) })
+       for (int x = -1; x <= 1; x++)
         {
-            yield return _grid[Location.Move(direction)];
+            for (int y = -1; y <= 1; y++)
+            {
+                yield return _grid[Location.Move(new Point(x, y))];
+            }
         }
     }    
 }
