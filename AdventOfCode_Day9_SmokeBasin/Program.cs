@@ -21,7 +21,7 @@ public class Terrain : Grid
         {
             for(int x = 0; x < input[y].Length; x++)
             {
-                SetMarker(new Marker(this, new Point(x, y), int.Parse(input[y][x].ToString())));
+                new Marker(this, new Point(x, y), int.Parse(input[y][x].ToString()));
             }
         }
 
@@ -78,6 +78,7 @@ public class Marker : IMarker
         _grid = g;
         Level = level;
         Location = p;
+        g.SetMarker(this);
     }
 
     public int Level { get; private set; }
@@ -182,7 +183,7 @@ public abstract class Grid : IEnumerable<IMarker>
         }
     }
 
-    protected void SetMarker(Marker m)
+    internal void SetMarker(Marker m)
     {
         if (InBounds(m.Location))
         {
