@@ -30,7 +30,7 @@ Cave start = caves.Single(c => c.IsStart);
 Path p = new Path();
 start.ProcessPaths(p);
 
-Console.WriteLine($"Path count: {p.PathCount}");
+Console.WriteLine($"Path count: {p.PathCount}"); // 91292
 
 
 
@@ -49,17 +49,11 @@ public class Path
 
     private static int _pathCount = 0;
 
-    private Cave _doubleVisitCave;
+    private bool _doubleVisit = false;
 
     public Path()
     {
         _path = new List<Cave>();
-    }
-
-    private Path(IEnumerable<Cave> path, Cave doubleVisit) : this()
-    {
-        _path.AddRange(path);
-        _doubleVisitCave = doubleVisit;
     }
 
     public bool AddToPath(Cave cave)
@@ -67,42 +61,40 @@ public class Path
         if (cave.IsEnd)
         {
             _path.Add(cave);
-           // Console.WriteLine(this.ToString());
             _pathCount++;
             return false;
         }
 
-        if (cave.IsStart && _path.Contains(cave))
-        {
-            return false;
-        }
-
-        if(!cave.IsSmall)
-        {
-            _path.Add(cave);
-            return true;
-        }
-
         if (_path.Contains(cave))
         {
-            if (_doubleVisitCave is null)
-            {
-                _doubleVisitCave = cave;
-            }
-            else
+            if (cave.IsStart)
             {
                 return false;
             }
+
+            if (cave.IsSmall)
+            {
+                if(!_doubleVisit)
+                {
+                    _doubleVisit = true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
-        // Add small cave
         _path.Add(cave);
         return true;
     }
 
     public Path Clone()
     {
-        return new Path(_path, _doubleVisitCave);
+        Path clonedPath = new();
+        clonedPath._path.AddRange(_path);
+        clonedPath._doubleVisit = _doubleVisit;
+        return clonedPath;
     }
 
     public int PathCount => _pathCount;
@@ -113,10 +105,7 @@ public class Path
 
         foreach(var cave in _path)
         {
-            if (pathAsString.Length > 0)
-            {
-                pathAsString.Append(",");
-            }
+            pathAsString.Append(pathAsString.Length == 0 ? "" : ",");
             pathAsString.Append(cave);
         }
         
