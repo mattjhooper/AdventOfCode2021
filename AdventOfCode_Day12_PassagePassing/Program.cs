@@ -49,14 +49,17 @@ public class Path
 
     private static int _pathCount = 0;
 
+    private Cave _doubleVisitCave;
+
     public Path()
     {
         _path = new List<Cave>();
     }
 
-    private Path(IEnumerable<Cave> path) : this()
+    private Path(IEnumerable<Cave> path, Cave doubleVisit) : this()
     {
         _path.AddRange(path);
+        _doubleVisitCave = doubleVisit;
     }
 
     public bool AddToPath(Cave cave)
@@ -64,24 +67,42 @@ public class Path
         if (cave.IsEnd)
         {
             _path.Add(cave);
-            Console.WriteLine(this.ToString());
+           // Console.WriteLine(this.ToString());
             _pathCount++;
             return false;
         }
 
-        if (_path.Contains(cave) && cave.IsSmall)
+        if (cave.IsStart && _path.Contains(cave))
         {
-            //Console.WriteLine($"Path ends: {this.ToString()}");
             return false;
         }
 
+        if(!cave.IsSmall)
+        {
+            _path.Add(cave);
+            return true;
+        }
+
+        if (_path.Contains(cave))
+        {
+            if (_doubleVisitCave is null)
+            {
+                _doubleVisitCave = cave;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // Add small cave
         _path.Add(cave);
         return true;
     }
 
     public Path Clone()
     {
-        return new Path(_path);
+        return new Path(_path, _doubleVisitCave);
     }
 
     public int PathCount => _pathCount;
