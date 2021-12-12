@@ -7,7 +7,7 @@ string[] lines = System.IO.File.ReadAllLines(@"Input.txt");
 
 var cavern = new Cavern(lines);
 
-//cavern.Print();
+cavern.Print();
 
 Console.WriteLine($"Flash count {cavern.GetFlashCount()}"); // 1642
 
@@ -136,7 +136,7 @@ public class Octopus : IMarker
         {
             for (int y = -1; y <= 1; y++)
             {
-                yield return _grid[Location.Move(new Point(x, y))];
+                yield return _grid[Location.Move(x, y)];
             }
         }
     }    
@@ -228,7 +228,9 @@ public abstract class Grid<T> : IEnumerable<IMarker> where T : IMarker
 
 public sealed record Point(int X, int Y)
 {
-    public Point Move(Point delta) => new Point(X + delta.X, Y + delta.Y);
+    public Point Move(Point delta) => Move(delta.X, delta.Y);
+
+    public Point Move(int x, int y) => new Point(X + x, Y + y);
 
     public override string ToString() => $"[{X},{Y}]";
 }

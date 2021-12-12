@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day5_HydrothermalVenture", "AdventOfCode_Day5_HydrothermalVenture\AdventOfCode_Day5_HydrothermalVenture.csproj", "{331ADEDC-2137-4763-9813-0F821C0B4F04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day05_HydrothermalVenture", "AdventOfCode_Day5_HydrothermalVenture\AdventOfCode_Day05_HydrothermalVenture.csproj", "{331ADEDC-2137-4763-9813-0F821C0B4F04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day6_Lanternfish", "AdventOfCode_Day6_Lanternfish\AdventOfCode_Day6_Lanternfish.csproj", "{6C8EBB68-AFE5-42BF-9A20-C5FD61042E3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day06_Lanternfish", "AdventOfCode_Day6_Lanternfish\AdventOfCode_Day06_Lanternfish.csproj", "{6C8EBB68-AFE5-42BF-9A20-C5FD61042E3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day7_Whales", "AdventOfCode_Day7_Whales\AdventOfCode_Day7_Whales.csproj", "{104BE763-1A7D-4E2B-AE62-C3686A6BB941}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day07_Whales", "AdventOfCode_Day7_Whales\AdventOfCode_Day07_Whales.csproj", "{104BE763-1A7D-4E2B-AE62-C3686A6BB941}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day8_SevenSegmentSearch", "AdventOfCode_Day8_SevenSegmentSearch\AdventOfCode_Day8_SevenSegmentSearch.csproj", "{49B09264-B746-4A92-A320-863D13B12D3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day08_SevenSegmentSearch", "AdventOfCode_Day8_SevenSegmentSearch\AdventOfCode_Day08_SevenSegmentSearch.csproj", "{49B09264-B746-4A92-A320-863D13B12D3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day9_SmokeBasin", "AdventOfCode_Day9_SmokeBasin\AdventOfCode_Day9_SmokeBasin.csproj", "{7444F1BC-F786-4137-9E17-10A0F2D61673}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day09_SmokeBasin", "AdventOfCode_Day9_SmokeBasin\AdventOfCode_Day09_SmokeBasin.csproj", "{7444F1BC-F786-4137-9E17-10A0F2D61673}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day10_SyntaxScoring", "AdventOfCode_Day10_SyntaxScoring\AdventOfCode_Day10_SyntaxScoring.csproj", "{2431655C-8FD6-4A1F-B0B2-F8AD55D4A2E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day10_SyntaxScoring", "AdventOfCode_Day10_SyntaxScoring\AdventOfCode_Day10_SyntaxScoring.csproj", "{2431655C-8FD6-4A1F-B0B2-F8AD55D4A2E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day_11_DumboOctopus", "AdventOfCode_Day_11_DumboOctopus\AdventOfCode_Day_11_DumboOctopus.csproj", "{498BD78E-7CE2-4949-873D-AA700DF73D3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day11_DumboOctopus", "AdventOfCode_Day_11_DumboOctopus\AdventOfCode_Day11_DumboOctopus.csproj", "{498BD78E-7CE2-4949-873D-AA700DF73D3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day12_PassagePassing", "AdventOfCode_Day12_PassagePassing\AdventOfCode_Day12_PassagePassing.csproj", "{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{498BD78E-7CE2-4949-873D-AA700DF73D3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{498BD78E-7CE2-4949-873D-AA700DF73D3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{498BD78E-7CE2-4949-873D-AA700DF73D3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
