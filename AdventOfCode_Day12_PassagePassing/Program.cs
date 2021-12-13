@@ -56,7 +56,7 @@ public class Path
         _path = new List<Cave>();
     }
 
-    public bool AddToPath(Cave cave)
+    private bool CheckForEnd(Cave cave)
     {
         if (cave.IsEnd)
         {
@@ -65,6 +65,11 @@ public class Path
             return false;
         }
 
+        return true;
+    }
+
+    private bool CheckInPath(Cave cave)
+    {
         if (_path.Contains(cave))
         {
             if (cave.IsStart)
@@ -74,7 +79,7 @@ public class Path
 
             if (cave.IsSmall)
             {
-                if(!_doubleVisit)
+                if (!_doubleVisit)
                 {
                     _doubleVisit = true;
                 }
@@ -85,8 +90,18 @@ public class Path
             }
         }
 
-        _path.Add(cave);
         return true;
+    }
+
+
+
+    public bool AddToPath(Cave cave)
+    {
+        bool keepGoing = CheckForEnd(cave);
+        keepGoing = keepGoing && CheckInPath(cave);  
+
+        _path.Add(cave);
+        return keepGoing;
     }
 
     public Path Clone()
