@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day10_SyntaxSc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day11_DumboOctopus", "AdventOfCode_Day_11_DumboOctopus\AdventOfCode_Day11_DumboOctopus.csproj", "{498BD78E-7CE2-4949-873D-AA700DF73D3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day12_PassagePassing", "AdventOfCode_Day12_PassagePassing\AdventOfCode_Day12_PassagePassing.csproj", "{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day12_PassagePassing", "AdventOfCode_Day12_PassagePassing\AdventOfCode_Day12_PassagePassing.csproj", "{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day13_TransparentOrigami", "AdventOfCode_Day13_TransparentOrigami\AdventOfCode_Day13_TransparentOrigami.csproj", "{60DB9252-D0EC-426E-A327-7005353B311F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89D6A7DD-1141-4C69-9F6F-9EAF686E6480}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60DB9252-D0EC-426E-A327-7005353B311F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60DB9252-D0EC-426E-A327-7005353B311F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60DB9252-D0EC-426E-A327-7005353B311F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60DB9252-D0EC-426E-A327-7005353B311F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
