@@ -13,7 +13,7 @@ Point[] coords = Array.ConvertAll<string, Point>(lines.Take(endOfCoords).ToArray
     return new Point(int.Parse(parts[0]), int.Parse(parts[1]));
 });
 
-string[] folds = lines.Skip(endOfCoords + 1).Take(lines.Length - endOfCoords).ToArray();
+string[] instructions = lines.Skip(endOfCoords + 1).Take(lines.Length - endOfCoords).ToArray();
 
 Console.WriteLine($"Width: {1 + coords.Select(p => p.X).Max()}. Height: {1 + coords.Select(p => p.Y).Max()}");
 
@@ -21,9 +21,9 @@ var paper = new Paper(coords);
 
 //paper.Print();
 
-foreach (string fold in folds)
+foreach (string instruction in instructions)
 {
-    paper = paper.Fold(fold);
+    paper = Instruction.Parse(instruction).Fold(paper);
     //paper.Print();
     Console.WriteLine($"Visible Dots: {paper.GetDotCount()}");
 }
@@ -45,83 +45,80 @@ public class Paper : Grid<Coord>
     public Paper(int height, int width) : base(height, width)
     { }
 
-    public Paper Fold(string instruction)
-    {
-        int position = int.Parse(instruction.Split("=")[1]);
-        bool isVertical = instruction[11] == 'x';
-        string direction = isVertical ? "Vertical" : "Horizontal";
-
-        Console.WriteLine($"{instruction}. {direction} {position}.");
-
-        int newHeight = isVertical ? this.Height : position;
-        int newWidth = isVertical ? position : this.Width;
-
-        var newPaper = new Paper(newHeight, newWidth);
-
-        foreach (var m in this.Where(m => !m.Empty))
-        {
-            new Coord(newPaper, m.GetTransition(isVertical, position));
-        }
-
-        return newPaper;
-
-    } 
-    
     public int GetDotCount()
     {
-        return this.Where(m => !m.Empty).Count();
+        return this.Count();
     }
 
     public override IMarker this[Point p]
     {
         get
         {
-            return base[p] ?? new Coord(this, p, ' ', true);
+            return base[p] ?? new Coord(this, p, ' ');
         }
+    }
+}
+
+public record Instruction(char Direction, int Position)
+{
+    public bool IsVertical => Direction == 'x';
+
+    public Paper Fold(Paper paper)
+    {
+        var newPaper = GetBlankPaper(paper);
+
+        foreach (var m in paper)
+        {
+            Fold(m, newPaper);
+        }
+
+        return newPaper;
+    }
+
+    private Paper GetBlankPaper(Paper paper)
+    {
+        int newHeight = IsVertical ? paper.Height : Position;
+        int newWidth = IsVertical ? Position : paper.Width;
+
+        return new Paper(newHeight, newWidth);
+    }
+
+    private void Fold(IMarker m, Paper paper)
+    {
+        int x = IsVertical && Position < m.Location.X ? 2 * Position - m.Location.X : m.Location.X;
+        int y = !IsVertical && Position < m.Location.Y ? 2 * Position - m.Location.Y : m.Location.Y;
+
+        new Coord(paper, new Point(x, y));
+    }
+
+    public static Instruction Parse(string instruction)
+    {
+        return new Instruction(instruction[11], int.Parse(instruction.Split("=")[1]));
     }
 }
 
 public interface IMarker
 {
     Point Location { get; }
-    string ToString();
-
-    bool Empty { get; }
-
-    Point GetTransition(bool isVertical, int position);
+    string ToString();    
 }
 
 public class Coord : IMarker
 {
     private readonly Grid<Coord> _grid;
     
-    public Coord(Grid<Coord> g, Point p, char m = '#', bool empty = false)
+    public Coord(Grid<Coord> g, Point p, char m = '#')
     {
         _grid = g;
         Location = p;
         Marker = m;
-        Empty = empty;
 
         g.SetMarker(this);
     }
 
     public char Marker { get; private set; }
 
-    public bool Empty { get; private set; }
-
     public Point Location { get; private set; }
-
-    public Point GetTransition(bool isVertical, int position)
-    {
-        if(isVertical)
-        {
-            int x = Location.X < position ? Location.X : 2 * position - Location.X;
-            return new Point(x, Location.Y);
-        }
-
-        int y = Location.Y < position ? Location.Y : 2 * position - Location.Y;
-        return new Point(Location.X, y);
-    }
 
     public override string ToString()
     {
@@ -143,10 +140,6 @@ public class Coord : IMarker
 public class OutOfBounds : IMarker
 {
     public Point Location => new Point(-1, -1);
-
-    public bool Empty => true;
-
-    public Point GetTransition(bool isVertical, int position) => Location;
 
     public override string ToString()
     {
