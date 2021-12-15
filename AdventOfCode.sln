@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day12_PassageP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day13_TransparentOrigami", "AdventOfCode_Day13_TransparentOrigami\AdventOfCode_Day13_TransparentOrigami.csproj", "{60DB9252-D0EC-426E-A327-7005353B311F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day14_ExtendedPolymerization", "AdventOfCode_Day14_ExtendedPolymerization\AdventOfCode_Day14_ExtendedPolymerization.csproj", "{C54E8961-CED3-4714-BA7A-664C5D243799}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode_Day14_ExtendedPolymerization", "AdventOfCode_Day14_ExtendedPolymerization\AdventOfCode_Day14_ExtendedPolymerization.csproj", "{C54E8961-CED3-4714-BA7A-664C5D243799}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode_Day15_Chiton", "AdventOfCode_Day15_Chiton\AdventOfCode_Day15_Chiton.csproj", "{0199BEEE-CC83-459E-9FD2-E486EAB2A604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{C54E8961-CED3-4714-BA7A-664C5D243799}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C54E8961-CED3-4714-BA7A-664C5D243799}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C54E8961-CED3-4714-BA7A-664C5D243799}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0199BEEE-CC83-459E-9FD2-E486EAB2A604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0199BEEE-CC83-459E-9FD2-E486EAB2A604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0199BEEE-CC83-459E-9FD2-E486EAB2A604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0199BEEE-CC83-459E-9FD2-E486EAB2A604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
