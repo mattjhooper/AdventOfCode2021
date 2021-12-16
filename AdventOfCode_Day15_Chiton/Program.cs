@@ -7,24 +7,38 @@ string[] lines = System.IO.File.ReadAllLines(@"Input.txt");
 
 var cavern = new Cavern(lines);
 
+Console.WriteLine($"Cavern Width: {cavern.Width}. Height: {cavern.Height}. ");
+
 //cavern.Print();
 
 cavern.MapPath();
 
 Console.WriteLine($"Lowest Risk Level: {cavern.GetLowestRiskLevel()}");
 
-Console.WriteLine($"Unreached nodes: {cavern.Sum(m => m.TotalRisk == int.MaxValue ? 1 : 0)} out of {cavern.Count()}");
+Console.WriteLine($"Unreached nodes: {cavern.Sum(m => m.TotalRisk == int.MaxValue ? 1 : 0)} out of {cavern.Count()}"); // 3040
 
 
 public class Cavern : Grid<Position>
 {
-    public Cavern(string[] input) : base(input.Length, input[0].Length)
+    public Cavern(string[] input, int cavernMultiplier = 5) : base(cavernMultiplier * input.Length, cavernMultiplier * input[0].Length)
     {
-        for (int y = 0; y < input.Length; y++)
-        {
-            for (int x = 0; x < input[y].Length; x++)
+
+        for (int yMultiplier = 0; yMultiplier < cavernMultiplier; yMultiplier++)
+        { 
+            for (int xMultiplier = 0; xMultiplier < cavernMultiplier; xMultiplier++)
             {
-                new Position(this, new Point(x, y), int.Parse(input[y][x].ToString()));
+                for (int y = 0; y < input.Length; y++)
+                {
+                    for (int x = 0; x < input[y].Length; x++)
+                    {
+                        int val = yMultiplier + xMultiplier + int.Parse(input[y][x].ToString());
+                        int adjustedX = x + (input[0].Length * xMultiplier);
+                        int adjustedY = y + (input.Length * yMultiplier);
+                        val = val > 9 ? val - 9 : val;
+                        new Position(this, new Point(adjustedX, adjustedY), val);
+                    }
+
+                }
             }
         }        
     }
@@ -38,13 +52,19 @@ public class Cavern : Grid<Position>
         currentVertex.Check(new OutOfBounds(), 0);
         currentVertex.CheckNeighbours();
 
-
+        long count = 0;
         while (this.Any(m => m.Temporary))
         {
+            count++;
             int minPath = this.Where(m => m.Temporary).Select(m => m.TotalRisk).Min();
 
             currentVertex = this.First(m => m.Temporary && m.TotalRisk == minPath);
             currentVertex.CheckNeighbours();
+
+            if (count % 500 == 0)
+            {
+                Console.WriteLine($"Count: {count}. {this.Count(x => x.Temporary)}");
+            }
 
         }
 
@@ -54,6 +74,14 @@ public class Cavern : Grid<Position>
     public int GetLowestRiskLevel()
     {
         return this.Single(m => m.End).TotalRisk - this.Single(m => m.Start).RiskLevel;
+    }
+
+    public override IMarker this[Point p]
+    {
+        get
+        {
+            return base[p] ?? new Position(this, p, 0);
+        }
     }
 
 }
