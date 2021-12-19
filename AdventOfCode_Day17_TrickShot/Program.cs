@@ -7,12 +7,13 @@ Point start = new(0, 0);
 // 85..145, y=-163..-108
 
 (Point min, Point max) targetArea = (new(85, -163), new(145, -108));
+//(Point min, Point max) targetArea = (new(20, -10), new(30, -5));
 
 Dictionary<Point,int> velocityHeight = new Dictionary<Point,int>();
 
-for (int x = 0; x < 20; x++)
+for (int x = -500; x < 500; x++)
 {
-    for (int y = 100; y < 300; y++)
+    for (int y = -500; y < 500; y++)
     {
         Point currPosition = start;
 
@@ -46,12 +47,14 @@ for (int x = 0; x < 20; x++)
     }
 }
 
+/*
 foreach ((Point key, int value) in velocityHeight)
 {
     Console.WriteLine($"Velocity: {key} Max height reached: {value}");
 }
+*/
 
-
+Console.WriteLine($"Distinct Velocities: {velocityHeight.Count}");
 
 int CalculateXVelocity(int x) => x == 0 ? 0 : x > 0 ? -1 : 1;
 
