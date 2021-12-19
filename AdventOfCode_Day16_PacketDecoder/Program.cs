@@ -67,8 +67,8 @@ public class Packet
     public override string ToString()
     {
         string typeDesc = IsOperator ? "Operator" : "Literal";
-        string packetSummary = IsOperator ? SubPacketsType ? $"Sub-packets: {_numberOfPackets}" : $"Bit Length: {_lengthOfBits}" : $"Number: {_value}";
-        return $"{typeDesc} packet. Type: {_type}. {packetSummary}";
+        string packetSummary = IsOperator ? SubPacketsType ? $"Sub-packets: {_numberOfPackets}" : $"Bit Length: {_lengthOfBits}" : "";
+        return $"{typeDesc} packet. Type: {_type}. {packetSummary}. Value: {_value}";
     }
 
     private void ProcessOperator()
@@ -112,7 +112,7 @@ public class Packet
             _subpackets.Add(subPacket);
         }
 
-
+        _value = _subpackets.Operate(_type);
     }
 
     private void ProcessBits()
@@ -120,7 +120,6 @@ public class Packet
         _lengthOfBits = _binary.Substring(_pos, 15).BinaryToNumber();
         _pos += 15;
         long endOfSubPackets = _pos + _lengthOfBits;
-
 
         while (_pos < endOfSubPackets)
         {
@@ -134,6 +133,8 @@ public class Packet
 
             _subpackets.Add(subPacket);
         }
+
+        _value = _subpackets.Operate(_type);
     }
 
     private void ProcessLiteral()
@@ -253,65 +254,12 @@ public static class ExtensionUtils
     {
         0 => packets.Sum(p => p.Value),
         1 => packets.Aggregate((long)1, (acc, p) => acc * p.Value),
+        2 => packets.Min(p => p.Value),
+        3 => packets.Max(p => p.Value),
+        5 => packets[0].Value > packets[1].Value ? 1 : 0,
+        6 => packets[0].Value < packets[1].Value ? 1 : 0,
+        7 => packets[0].Value == packets[1].Value ? 1 : 0,
         _ => throw new ArgumentOutOfRangeException(nameof(type), $"Not expected type value: {type}"),
-    };
-
-    public static IOperator GetOperator(this long type, List<Packet> packets) => type switch
-    {
-        0 => new Sum(packets),        
-        1 => new Product(packets),
-        _ => throw new ArgumentOutOfRangeException(nameof(type), $"Not expected type value: {type}"),
-    };
-    
+    };        
 }
 
-public interface IOperator
-{
-    long Operate();
-}
-
-public abstract class Operator
-{
-    protected readonly List<Packet> _packets;
-
-    public Operator(List<Packet> packets)
-    {
-        _packets = packets ?? new List<Packet> ();
-    }
-}
-
-public class Sum : Operator, IOperator
-{
-
-    public Sum(List<Packet> packets) : base(packets)
-    { }
-
-    public long Operate()
-    {
-        return _packets.Sum(p => p.Value);
-    }
-}
-
-public class Product : Operator, IOperator
-{
-
-    public Product(List<Packet> packets) : base(packets)
-    { }
-
-    public long Operate()
-    {
-        return _packets.Aggregate((long)1, (acc, p) => acc * p.Value);
-    }
-}
-
-public class Minimum : Operator, IOperator
-{
-
-    public Minimum(List<Packet> packets) : base(packets)
-    { }
-
-    public long Operate()
-    {
-        return _packets.Aggregate((long)1, (acc, p) => acc * p.Value);
-    }
-}
