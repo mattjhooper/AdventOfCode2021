@@ -16,12 +16,14 @@ public class Packet
 {
     private readonly string _binary;
     private int _pos;
-    private readonly int _version;
-    private readonly int _type;
+    private readonly long _version;
+    private readonly long _type;
     private bool _hasSubPackets;
-    private int _lengthOfBits;
-    private int _numberOfPackets;
-    private int _literalValue;
+    private long _lengthOfBits;
+    private long _numberOfPackets;
+    private long _value;
+
+    private List<Packet> _subpackets;
 
     public Packet(string packetString)
     {
@@ -30,8 +32,9 @@ public class Packet
         _version = GetVersion();
         _type = _binary.Substring(_pos, 3).BinaryToNumber();
         _pos += 3;
+        _subpackets = new();
 
-        TotalVersion = _version;
+        TotalVersion = (int)_version;
 
         PackageCount = 1;
 
@@ -47,7 +50,9 @@ public class Packet
         Console.WriteLine(ToString());
     }
 
-    public int Version => _version;
+    public long Version => _version;
+
+    public long Value => _value;
 
     public int TotalVersion { get; private set; }
 
@@ -62,8 +67,8 @@ public class Packet
     public override string ToString()
     {
         string typeDesc = IsOperator ? "Operator" : "Literal";
-        string packetSummary = IsOperator ? SubPacketsType ? $"Sub-packets: {_numberOfPackets}" : $"Bit Length: {_lengthOfBits}" : $"Number: {_literalValue}";
-        return $"{typeDesc} packet. Version: {_version}. {packetSummary}";
+        string packetSummary = IsOperator ? SubPacketsType ? $"Sub-packets: {_numberOfPackets}" : $"Bit Length: {_lengthOfBits}" : $"Number: {_value}";
+        return $"{typeDesc} packet. Type: {_type}. {packetSummary}";
     }
 
     private void ProcessOperator()
@@ -81,21 +86,9 @@ public class Packet
         }
     }
 
-    private int GetVersion()
+    private long GetVersion()
     {
-        int version = _binary.Substring(_pos, 3).BinaryToNumber();
-
-        /*
-        if (version == 0)
-        {
-            while (_pos < _binary.Length && _binary[_pos] == '0')
-            {
-                _pos++;
-            }
-
-            version = _binary.Substring(_pos, 3).BinaryToNumber();
-        }
-        */
+        long version = _binary.Substring(_pos, 3).BinaryToNumber();
 
         _pos += 3;
         return version;
@@ -115,25 +108,31 @@ public class Packet
             PackageCount += subPacket.PackageCount;
 
             _pos += subPacket.Length;
+
+            _subpackets.Add(subPacket);
         }
+
+
     }
 
     private void ProcessBits()
     {
         _lengthOfBits = _binary.Substring(_pos, 15).BinaryToNumber();
         _pos += 15;
-        int endOfSubPackets = _pos + _lengthOfBits;
+        long endOfSubPackets = _pos + _lengthOfBits;
 
 
         while (_pos < endOfSubPackets)
         {
-            var subPacket = new Packet(_binary.Substring(_pos, endOfSubPackets - _pos));
+            var subPacket = new Packet(_binary.Substring(_pos,(int) endOfSubPackets - _pos));
 
             TotalVersion += subPacket.TotalVersion;
 
             PackageCount += subPacket.PackageCount;
 
             _pos += subPacket.Length;
+
+            _subpackets.Add(subPacket);
         }
     }
 
@@ -162,7 +161,7 @@ public class Packet
         }
         */
 
-        _literalValue = binaryNumberAsString.BinaryToNumber();
+        _value = binaryNumberAsString.BinaryToNumber();
 
         //Console.WriteLine($"Position: {_pos} Packet: {PacketCount}. Binary Number. {binaryNumberAsString.BinaryToNumber()}");
     }
@@ -241,11 +240,78 @@ public class PacketProcessor
 
 public static class ExtensionUtils
 {
-    public static int BinaryToNumber(this string binaryString)
+    public static long BinaryToNumber(this string binaryString)
     {
+        /*
         if (binaryString.Length >= "1111111111111111111111111111111".Length)
-            return int.MaxValue;
+            return int.MaxValue;*/
         
-        return Convert.ToInt32(binaryString, 2);
+        return Convert.ToInt64(binaryString, 2);
+    }
+
+    public static long Operate(this List<Packet> packets, long type) => type switch
+    {
+        0 => packets.Sum(p => p.Value),
+        1 => packets.Aggregate((long)1, (acc, p) => acc * p.Value),
+        _ => throw new ArgumentOutOfRangeException(nameof(type), $"Not expected type value: {type}"),
+    };
+
+    public static IOperator GetOperator(this long type, List<Packet> packets) => type switch
+    {
+        0 => new Sum(packets),        
+        1 => new Product(packets),
+        _ => throw new ArgumentOutOfRangeException(nameof(type), $"Not expected type value: {type}"),
+    };
+    
+}
+
+public interface IOperator
+{
+    long Operate();
+}
+
+public abstract class Operator
+{
+    protected readonly List<Packet> _packets;
+
+    public Operator(List<Packet> packets)
+    {
+        _packets = packets ?? new List<Packet> ();
+    }
+}
+
+public class Sum : Operator, IOperator
+{
+
+    public Sum(List<Packet> packets) : base(packets)
+    { }
+
+    public long Operate()
+    {
+        return _packets.Sum(p => p.Value);
+    }
+}
+
+public class Product : Operator, IOperator
+{
+
+    public Product(List<Packet> packets) : base(packets)
+    { }
+
+    public long Operate()
+    {
+        return _packets.Aggregate((long)1, (acc, p) => acc * p.Value);
+    }
+}
+
+public class Minimum : Operator, IOperator
+{
+
+    public Minimum(List<Packet> packets) : base(packets)
+    { }
+
+    public long Operate()
+    {
+        return _packets.Aggregate((long)1, (acc, p) => acc * p.Value);
     }
 }
