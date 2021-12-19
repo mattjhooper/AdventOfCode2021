@@ -243,6 +243,9 @@ public static class ExtensionUtils
 {
     public static int BinaryToNumber(this string binaryString)
     {
+        if (binaryString.Length >= "1111111111111111111111111111111".Length)
+            return int.MaxValue;
+        
         return Convert.ToInt32(binaryString, 2);
     }
 }
